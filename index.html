@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MoneyManager</title>
+  <meta name="theme-color" content="#2f6b4f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="MoneyManager">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="account" id="account" hidden>
+      <span class="sync-status" id="sync-status"></span>
+      <span class="account-email" id="account-email"></span>
+      <button type="button" class="btn btn-ghost" id="sign-out">Se déconnecter</button>
+    </div>
+    <div class="brand">
+      <h1>MoneyManager</h1>
+      <p class="subtitle">Ton budget du mois, en clair.</p>
+    </div>
+    <div class="month-picker">
+      <label for="month">Mois de référence</label>
+      <input type="month" id="month">
+      <button type="button" class="btn btn-ghost" id="copy-previous">Reprendre le mois précédent</button>
+    </div>
+  </header>
+
+  <section class="card auth" id="auth" aria-labelledby="auth-title" hidden>
+    <h2 id="auth-title">Connexion</h2>
+    <p class="hint">Connecte-toi pour retrouver ton budget sur ton ordinateur comme sur ton téléphone.</p>
+    <form id="auth-form">
+      <fieldset id="auth-fields">
+        <label for="auth-email">Adresse e-mail</label>
+        <input type="email" id="auth-email" autocomplete="email" required>
+        <label for="auth-password">Mot de passe</label>
+        <input type="password" id="auth-password" autocomplete="current-password" minlength="6" required>
+        <p class="message" id="auth-message" hidden></p>
+        <div class="auth-actions">
+          <button type="submit" class="btn btn-primary">Se connecter</button>
+          <button type="button" class="btn btn-ghost" id="auth-signup">Créer mon compte</button>
+        </div>
+        <button type="button" class="btn btn-link" id="auth-reset">Mot de passe oublié ?</button>
+      </fieldset>
+    </form>
+  </section>
+
+  <main class="layout">
+    <section class="card" aria-labelledby="incomes-title">
+      <div class="card-head">
+        <h2 id="incomes-title">Revenus</h2>
+        <span class="total" id="incomes-total">0,00 €</span>
+      </div>
+      <p class="hint">Salaire, primes, aides, revenus annexes… du mois.</p>
+      <div class="list" id="incomes-list" data-kind="incomes"></div>
+      <button type="button" class="btn btn-add" data-add="incomes">+ Ajouter un revenu</button>
+    </section>
+
+    <section class="card" aria-labelledby="expenses-title">
+      <div class="card-head">
+        <h2 id="expenses-title">Dépenses obligatoires</h2>
+        <span class="total" id="expenses-total">0,00 €</span>
+      </div>
+      <p class="hint">Ce que tu dois payer quoi qu'il arrive : loyer, factures, assurances, crédits…</p>
+      <div class="list" id="expenses-list" data-kind="expenses"></div>
+      <button type="button" class="btn btn-add" data-add="expenses">+ Ajouter une dépense</button>
+    </section>
+
+    <section class="card" aria-labelledby="alloc-title">
+      <div class="card-head">
+        <h2 id="alloc-title">Répartition du reste</h2>
+        <span class="total" id="alloc-total">0 %</span>
+      </div>
+      <p class="hint">Choisis quel pourcentage de l'argent restant (après dépenses obligatoires) va dans chaque poste.</p>
+      <div class="presets">
+        <span>Modèles :</span>
+        <button type="button" class="chip" data-preset="equilibre">Équilibré</button>
+        <button type="button" class="chip" data-preset="epargne">Priorité épargne</button>
+        <button type="button" class="chip" data-preset="plaisir">Priorité loisirs</button>
+      </div>
+      <div class="list" id="alloc-list"></div>
+      <button type="button" class="btn btn-add" id="add-alloc">+ Ajouter un poste</button>
+      <p class="message" id="alloc-message" hidden></p>
+    </section>
+
+    <section class="card results" aria-labelledby="results-title">
+      <h2 id="results-title">Résultats</h2>
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-label">Revenus</span>
+          <span class="stat-value" id="r-income">0,00 €</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Dépenses obligatoires</span>
+          <span class="stat-value" id="r-expenses">0,00 €</span>
+        </div>
+        <div class="stat stat-main">
+          <span class="stat-label">Reste à répartir</span>
+          <span class="stat-value" id="r-rest">0,00 €</span>
+        </div>
+      </div>
+
+      <p class="message" id="results-message" hidden></p>
+
+      <h3>Où va ton argent</h3>
+      <div class="bar" id="bar" role="img" aria-label="Répartition des revenus"></div>
+      <ul class="legend" id="legend"></ul>
+
+      <div class="table-wrap">
+        <table class="alloc-table">
+          <thead>
+            <tr><th>Poste</th><th>Montant</th><th>% du reste</th><th>% des revenus</th></tr>
+          </thead>
+          <tbody id="alloc-table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="indicator" id="indicator"></div>
+    </section>
+
+    <section class="card history" aria-labelledby="history-title">
+      <h2 id="history-title">Historique</h2>
+      <div class="table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr><th>Mois</th><th>Revenus</th><th>Dépenses oblig.</th><th>Reste</th></tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+      <p class="hint" id="history-empty">Aucun mois enregistré pour l'instant.</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p id="storage-note">Données enregistrées uniquement dans ce navigateur.</p>
+    <div class="footer-actions">
+      <button type="button" class="btn btn-ghost" id="export">Exporter (sauvegarde)</button>
+      <label class="btn btn-ghost" for="import">Importer</label>
+      <input type="file" id="import" accept="application/json,.json" hidden>
+      <button type="button" class="btn btn-danger" id="reset">Tout effacer</button>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
