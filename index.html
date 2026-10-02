@@ -2,36 +2,78 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>MoneyManager</title>
-  <meta name="theme-color" content="#2f6b4f">
+  <meta name="theme-color" content="#0b3d2e">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" href="icons/icon-192.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="MoneyManager">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="app-header">
-    <div class="account" id="account" hidden>
-      <span class="sync-status" id="sync-status"></span>
-      <span class="account-email" id="account-email"></span>
-      <button type="button" class="btn btn-ghost" id="sign-out">Se déconnecter</button>
-    </div>
-    <div class="brand">
-      <h1>MoneyManager</h1>
-      <p class="subtitle">Ton budget du mois, en clair.</p>
-    </div>
-    <div class="month-picker">
-      <label for="month">Mois de référence</label>
-      <input type="month" id="month">
-      <button type="button" class="btn btn-ghost" id="copy-previous">Reprendre le mois précédent</button>
+  <!-- Icônes -->
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+    <symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></symbol>
+    <symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2l8 5H4z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M22 7l-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M22 17l-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  </svg>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <div class="brand">
+          <span class="logo" aria-hidden="true">€</span>
+          <div>
+            <h1>MoneyManager</h1>
+            <p class="subtitle">Ton budget du mois, en clair.</p>
+          </div>
+        </div>
+        <div class="account" id="account" hidden>
+          <span class="sync-status" id="sync-status"></span>
+          <span class="account-email" id="account-email"></span>
+          <button type="button" class="btn btn-glass btn-sm" id="sign-out">Se déconnecter</button>
+        </div>
+      </div>
+
+      <div class="hero-row" id="hero-row">
+        <div class="hero-balance">
+          <span class="hero-label"><svg class="ic"><use href="#i-wallet"/></svg><span id="hero-name">Compte courant</span> · solde estimé</span>
+          <span class="hero-amount" id="hero-amount">—</span>
+          <span class="hero-sub" id="hero-sub"></span>
+          <button type="button" class="btn btn-glass btn-sm" id="hero-update"><svg class="ic"><use href="#i-edit"/></svg>Mettre à jour le solde</button>
+        </div>
+        <div class="month-picker">
+          <label for="month">Mois affiché</label>
+          <input type="month" id="month">
+          <button type="button" class="btn btn-glass btn-sm" id="copy-previous">Reprendre le mois précédent</button>
+        </div>
+      </div>
     </div>
   </header>
 
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Sections">
+    <button type="button" class="tab" role="tab" data-tab="compte"><svg class="ic"><use href="#i-wallet"/></svg><span>Mon compte</span></button>
+    <button type="button" class="tab" role="tab" data-tab="budget"><svg class="ic"><use href="#i-pie"/></svg><span>Budget</span></button>
+    <button type="button" class="tab" role="tab" data-tab="historique"><svg class="ic"><use href="#i-history"/></svg><span>Historique</span></button>
+  </nav>
+
   <section class="card auth" id="auth" aria-labelledby="auth-title" hidden>
+    <span class="logo logo-lg" aria-hidden="true">€</span>
     <h2 id="auth-title">Connexion</h2>
     <p class="hint">Connecte-toi pour retrouver ton budget sur ton ordinateur comme sur ton téléphone.</p>
     <form id="auth-form">
@@ -51,90 +93,171 @@
   </section>
 
   <main class="layout">
-    <section class="card" aria-labelledby="incomes-title">
-      <div class="card-head">
-        <h2 id="incomes-title">Revenus</h2>
-        <span class="total" id="incomes-total">0,00 €</span>
-      </div>
-      <p class="hint">Salaire, primes, aides, revenus annexes… du mois.</p>
-      <div class="list" id="incomes-list" data-kind="incomes"></div>
-      <button type="button" class="btn btn-add" data-add="incomes">+ Ajouter un revenu</button>
-    </section>
-
-    <section class="card" aria-labelledby="expenses-title">
-      <div class="card-head">
-        <h2 id="expenses-title">Dépenses obligatoires</h2>
-        <span class="total" id="expenses-total">0,00 €</span>
-      </div>
-      <p class="hint">Ce que tu dois payer quoi qu'il arrive : loyer, factures, assurances, crédits…</p>
-      <div class="list" id="expenses-list" data-kind="expenses"></div>
-      <button type="button" class="btn btn-add" data-add="expenses">+ Ajouter une dépense</button>
-    </section>
-
-    <section class="card" aria-labelledby="alloc-title">
-      <div class="card-head">
-        <h2 id="alloc-title">Répartition du reste</h2>
-        <span class="total" id="alloc-total">0 %</span>
-      </div>
-      <p class="hint">Choisis quel pourcentage de l'argent restant (après dépenses obligatoires) va dans chaque poste.</p>
-      <div class="presets">
-        <span>Modèles :</span>
-        <button type="button" class="chip" data-preset="equilibre">Équilibré</button>
-        <button type="button" class="chip" data-preset="epargne">Priorité épargne</button>
-        <button type="button" class="chip" data-preset="plaisir">Priorité loisirs</button>
-      </div>
-      <div class="list" id="alloc-list"></div>
-      <button type="button" class="btn btn-add" id="add-alloc">+ Ajouter un poste</button>
-      <p class="message" id="alloc-message" hidden></p>
-    </section>
-
-    <section class="card results" aria-labelledby="results-title">
-      <h2 id="results-title">Résultats</h2>
-      <div class="stats">
-        <div class="stat">
-          <span class="stat-label">Revenus</span>
-          <span class="stat-value" id="r-income">0,00 €</span>
+    <!-- ========== Mon compte ========== -->
+    <div class="panel" data-panel="compte" role="tabpanel">
+      <section class="card" aria-labelledby="bank-title">
+        <div class="card-head">
+          <h2 id="bank-title"><span class="badge tone-blue"><svg class="ic"><use href="#i-bank"/></svg></span>Mon compte bancaire</h2>
         </div>
-        <div class="stat">
-          <span class="stat-label">Dépenses obligatoires</span>
-          <span class="stat-value" id="r-expenses">0,00 €</span>
+        <p class="hint">Recopie le solde affiché par ta banque. Les dépenses que tu ajoutes ensuite sont déduites automatiquement.</p>
+        <form id="account-form" class="stack">
+          <label for="account-name">Nom du compte</label>
+          <input type="text" id="account-name" placeholder="Compte courant" autocomplete="off">
+          <label for="account-balance">Solde actuel</label>
+          <div class="inline-form">
+            <div class="suffix-wrap">
+              <input type="text" id="account-balance" inputmode="decimal" placeholder="0" autocomplete="off">
+              <span>€</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Mettre à jour</button>
+          </div>
+        </form>
+        <p class="account-info" id="account-info"></p>
+      </section>
+
+      <section class="card" aria-labelledby="tx-title">
+        <div class="card-head">
+          <h2 id="tx-title"><span class="badge tone-orange"><svg class="ic"><use href="#i-plus"/></svg></span>Ajouter une dépense</h2>
         </div>
-        <div class="stat stat-main">
-          <span class="stat-label">Reste à répartir</span>
-          <span class="stat-value" id="r-rest">0,00 €</span>
+        <p class="hint">Choisis la catégorie pour suivre ton budget poste par poste.</p>
+        <form id="tx-form" class="stack">
+          <div class="tx-grid">
+            <div>
+              <label for="tx-amount">Montant</label>
+              <div class="suffix-wrap suffix-lg">
+                <input type="text" id="tx-amount" inputmode="decimal" placeholder="0,00" autocomplete="off">
+                <span>€</span>
+              </div>
+            </div>
+            <div>
+              <label for="tx-date">Date</label>
+              <input type="date" id="tx-date">
+            </div>
+          </div>
+          <label for="tx-label">Description</label>
+          <input type="text" id="tx-label" placeholder="Ex. : courses, cinéma, plein d'essence…" autocomplete="off">
+          <span class="field-label" id="tx-cat-label">Catégorie</span>
+          <div class="cat-chips" id="tx-categories" role="group" aria-labelledby="tx-cat-label"></div>
+          <p class="message" id="tx-message" hidden></p>
+          <button type="submit" class="btn btn-primary btn-block">Ajouter la dépense</button>
+        </form>
+      </section>
+
+      <section class="card span-all" aria-labelledby="track-title">
+        <div class="card-head">
+          <h2 id="track-title"><span class="badge tone-green"><svg class="ic"><use href="#i-target"/></svg></span>Suivi du mois</h2>
+          <span class="pill" id="track-month"></span>
         </div>
-      </div>
+        <p class="hint">Ce que tu as dépensé dans chaque poste, comparé à ce que prévoit ta répartition (onglet Budget).</p>
+        <div class="stats" id="track-stats"></div>
+        <div class="meters" id="meters"></div>
+      </section>
 
-      <p class="message" id="results-message" hidden></p>
+      <section class="card span-all" aria-labelledby="list-title">
+        <div class="card-head">
+          <h2 id="list-title"><span class="badge tone-violet"><svg class="ic"><use href="#i-receipt"/></svg></span>Dépenses du mois</h2>
+          <span class="pill" id="tx-count"></span>
+        </div>
+        <ul class="tx-list" id="tx-list"></ul>
+        <p class="empty" id="tx-empty">Aucune dépense enregistrée ce mois-ci. Ajoute ta première dépense ci-dessus.</p>
+      </section>
+    </div>
 
-      <h3>Où va ton argent</h3>
-      <div class="bar" id="bar" role="img" aria-label="Répartition des revenus"></div>
-      <ul class="legend" id="legend"></ul>
+    <!-- ========== Budget ========== -->
+    <div class="panel" data-panel="budget" role="tabpanel" hidden>
+      <section class="card" aria-labelledby="incomes-title">
+        <div class="card-head">
+          <h2 id="incomes-title"><span class="badge tone-green"><svg class="ic"><use href="#i-up"/></svg></span>Revenus</h2>
+          <span class="total" id="incomes-total">0,00 €</span>
+        </div>
+        <p class="hint">Salaire, primes, aides, revenus annexes… du mois.</p>
+        <div class="list" id="incomes-list" data-kind="incomes"></div>
+        <button type="button" class="btn btn-add" data-add="incomes">+ Ajouter un revenu</button>
+      </section>
 
-      <div class="table-wrap">
-        <table class="alloc-table">
-          <thead>
-            <tr><th>Poste</th><th>Montant</th><th>% du reste</th><th>% des revenus</th></tr>
-          </thead>
-          <tbody id="alloc-table-body"></tbody>
-        </table>
-      </div>
+      <section class="card" aria-labelledby="expenses-title">
+        <div class="card-head">
+          <h2 id="expenses-title"><span class="badge tone-red"><svg class="ic"><use href="#i-down"/></svg></span>Dépenses obligatoires</h2>
+          <span class="total" id="expenses-total">0,00 €</span>
+        </div>
+        <p class="hint">Ce que tu dois payer quoi qu'il arrive : loyer, factures, assurances, crédits…</p>
+        <div class="list" id="expenses-list" data-kind="expenses"></div>
+        <button type="button" class="btn btn-add" data-add="expenses">+ Ajouter une dépense</button>
+      </section>
 
-      <div class="indicator" id="indicator"></div>
-    </section>
+      <section class="card span-all" aria-labelledby="alloc-title">
+        <div class="card-head">
+          <h2 id="alloc-title"><span class="badge tone-orange"><svg class="ic"><use href="#i-pie"/></svg></span>Répartition du reste</h2>
+          <span class="total" id="alloc-total">0 %</span>
+        </div>
+        <p class="hint">Choisis quel pourcentage de l'argent restant (après dépenses obligatoires) va dans chaque poste. Ces postes servent aussi de catégories pour tes dépenses.</p>
+        <div class="presets">
+          <span>Modèles :</span>
+          <button type="button" class="chip" data-preset="equilibre">Équilibré</button>
+          <button type="button" class="chip" data-preset="epargne">Priorité épargne</button>
+          <button type="button" class="chip" data-preset="plaisir">Priorité loisirs</button>
+        </div>
+        <div class="list" id="alloc-list"></div>
+        <button type="button" class="btn btn-add" id="add-alloc">+ Ajouter un poste</button>
+        <p class="message" id="alloc-message" hidden></p>
+      </section>
 
-    <section class="card history" aria-labelledby="history-title">
-      <h2 id="history-title">Historique</h2>
-      <div class="table-wrap">
-        <table class="history-table">
-          <thead>
-            <tr><th>Mois</th><th>Revenus</th><th>Dépenses oblig.</th><th>Reste</th></tr>
-          </thead>
-          <tbody id="history-body"></tbody>
-        </table>
-      </div>
-      <p class="hint" id="history-empty">Aucun mois enregistré pour l'instant.</p>
-    </section>
+      <section class="card results span-all" aria-labelledby="results-title">
+        <div class="card-head">
+          <h2 id="results-title"><span class="badge tone-blue"><svg class="ic"><use href="#i-chart"/></svg></span>Résultats</h2>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Revenus</span>
+            <span class="stat-value" id="r-income">0,00 €</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Dépenses obligatoires</span>
+            <span class="stat-value" id="r-expenses">0,00 €</span>
+          </div>
+          <div class="stat stat-main">
+            <span class="stat-label">Reste à répartir</span>
+            <span class="stat-value" id="r-rest">0,00 €</span>
+          </div>
+        </div>
+
+        <p class="message" id="results-message" hidden></p>
+
+        <h3>Où va ton argent</h3>
+        <div class="bar" id="bar" role="img" aria-label="Répartition des revenus"></div>
+        <ul class="legend" id="legend"></ul>
+
+        <div class="table-wrap">
+          <table class="alloc-table">
+            <thead>
+              <tr><th>Poste</th><th>Montant</th><th>% du reste</th><th>% des revenus</th></tr>
+            </thead>
+            <tbody id="alloc-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="indicator" id="indicator"></div>
+      </section>
+    </div>
+
+    <!-- ========== Historique ========== -->
+    <div class="panel" data-panel="historique" role="tabpanel" hidden>
+      <section class="card history span-all" aria-labelledby="history-title">
+        <div class="card-head">
+          <h2 id="history-title"><span class="badge tone-violet"><svg class="ic"><use href="#i-history"/></svg></span>Historique</h2>
+        </div>
+        <p class="hint">Clique sur un mois pour l'afficher.</p>
+        <div class="table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr><th>Mois</th><th>Revenus</th><th>Dépenses oblig.</th><th>Reste</th><th>Dépensé</th></tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+        <p class="empty" id="history-empty">Aucun mois enregistré pour l'instant.</p>
+      </section>
+    </div>
   </main>
 
   <footer class="app-footer">
@@ -146,6 +269,11 @@
       <button type="button" class="btn btn-danger" id="reset">Tout effacer</button>
     </div>
   </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span id="toast-text"></span>
+    <button type="button" class="toast-action" id="toast-action" hidden></button>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>

@@ -10,6 +10,9 @@ L'application calcule automatiquement le montant à mettre dans chaque poste.
 
 ## Fonctionnalités
 
+- **Mon compte** : solde du compte bancaire, ajout des dépenses au fil de l'eau avec leur catégorie
+  (épargne, loisirs, vie courante…), solde estimé mis à jour automatiquement
+- Suivi du mois : pour chaque poste, ce qui a été dépensé comparé à ce que prévoit la répartition
 - Revenus et dépenses obligatoires librement modifiables (ajout / suppression de lignes)
 - Répartition en pourcentages personnalisables, avec des modèles prêts à l'emploi
 - Résultats : reste à répartir, montant par poste, barre de répartition des revenus
